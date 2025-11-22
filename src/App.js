@@ -4,7 +4,7 @@ import prettier from 'prettier/standalone';
 import parserBabel from 'prettier/parser-babel';
 import { io } from 'socket.io-client';
 
-const socket = io('http://localhost:4000'); // Replace with your server URL
+const socket = io('http://localhost:4000'); 
 
 const App = () => {
   const [code, setCode] = useState('// Start typing your code here...');
@@ -13,29 +13,22 @@ const App = () => {
   const [output, setOutput] = useState('');
   const [aiSuggestion, setAiSuggestion] = useState('');
   const [loading, setLoading] = useState(false);
-  const [history, setHistory] = useState([]); // For version control
+  const [history, setHistory] = useState([]); 
   const [userName, setUserName] = useState('');
 
-  // Mock AI Suggestions
   const fetchAISuggestion = async (inputCode) => {
-    const mockedSuggestions = [
-      "Consider adding error handling for better reliability.",
-      "You can optimize this loop using array methods like map or filter.",
-      "Refactor this function to improve performance.",
-      "Use meaningful variable names for better readability.",
-      "Add comments to explain complex logic.",
-    ];
-
-    // Simulate API behavior
+  console.log(inputCode);
+  setAiSuggestion("Fetching AI suggestion...");
+};  
     setAiSuggestion('Fetching AI suggestion...');
     setTimeout(() => {
       const randomSuggestion =
         mockedSuggestions[Math.floor(Math.random() * mockedSuggestions.length)];
       setAiSuggestion(randomSuggestion);
-    }, 1000); // 1-second delay
+    }, 1000); 
   };
 
-  // Execute Code Function
+  
   const executeCode = async () => {
     setLoading(true);
     try {
@@ -43,21 +36,21 @@ const App = () => {
         const capturedLogs = [];
         const originalLog = console.log;
 
-        // Capture console.log outputs
+        
         console.log = (...args) => {
           capturedLogs.push(args.join(' '));
         };
 
-        // Execute the user's code
+        
         new Function(code)();
 
-        // Restore original console.log
+        
         console.log = originalLog;
 
-        // Set captured logs as output
+      
         setOutput(capturedLogs.join('\n') || 'Code executed successfully');
       } else {
-        // For other languages, show a placeholder
+        
         setOutput('Code execution for this language is not supported yet.');
       }
     } catch (error) {
@@ -67,7 +60,6 @@ const App = () => {
     }
   };
 
-  // Format Code
   const formatCode = () => {
     try {
       const formatted = prettier.format(code, {
@@ -80,13 +72,11 @@ const App = () => {
     }
   };
 
-  // Save Code Snapshot
   const saveSnapshot = () => {
     setHistory((prev) => [...prev, code]);
     alert('Snapshot saved!');
   };
 
-  // Handle Collaborative Changes
   useEffect(() => {
     socket.on('codeChange', (newCode) => {
       setCode(newCode);
@@ -102,8 +92,6 @@ const App = () => {
   return (
     <div style={{ padding: '20px', backgroundColor: '#1e1e1e', color: 'white', minHeight: '100vh' }}>
       <h1 style={{ textAlign: 'center' }}>AI Code Editor</h1>
-
-      {/* User Authentication */}
       <div style={{ marginBottom: '20px', textAlign: 'center' }}>
         <label htmlFor="userName" style={{ marginRight: '10px' }}>Enter Username:</label>
         <input
@@ -116,7 +104,6 @@ const App = () => {
         />
       </div>
 
-      {/* Toolbar */}
       <div style={{ marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <label htmlFor="language" style={{ marginRight: '10px' }}>Choose Language:</label>
@@ -136,8 +123,6 @@ const App = () => {
           Toggle {theme === 'vs-dark' ? 'Light' : 'Dark'} Mode
         </button>
       </div>
-
-      {/* Monaco Editor */}
       <Editor
         height="50vh"
         language={language}
@@ -146,8 +131,6 @@ const App = () => {
         options={{ scrollBeyondLastLine: false }}
         onChange={handleCodeChange}
       />
-
-      {/* Action Buttons */}
       <div style={{ marginTop: '10px', display: 'flex', justifyContent: 'space-between' }}>
         <button onClick={executeCode} style={buttonStyle} disabled={loading}>
           {loading ? 'Running...' : 'Run Code'}
@@ -155,8 +138,6 @@ const App = () => {
         <button onClick={formatCode} style={buttonStyle}>Format Code</button>
         <button onClick={saveSnapshot} style={buttonStyle}>Save Snapshot</button>
       </div>
-
-      {/* AI Suggestions */}
       <div style={{ backgroundColor: '#2d2d2d', padding: '10px', marginTop: '20px', borderRadius: '5px' }}>
         <h3>AI Suggestion:</h3>
         <pre style={{ whiteSpace: 'pre-wrap', color: '#dcdcdc' }}>
@@ -164,7 +145,6 @@ const App = () => {
         </pre>
       </div>
 
-      {/* Output Panel */}
       <div style={{ backgroundColor: '#2d2d2d', padding: '10px', marginTop: '20px', borderRadius: '5px' }}>
         <h3>Output:</h3>
         <pre style={{ whiteSpace: 'pre-wrap', color: '#dcdcdc' }}>
